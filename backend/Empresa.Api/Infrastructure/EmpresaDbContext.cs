@@ -10,15 +10,48 @@ public class EmpresaDbContext : DbContext
         : base(options) { }
 
     public DbSet<Usuario> Usuarios => Set<Usuario>();
+    public DbSet<Rol> Roles => Set<Rol>();
+    public DbSet<UsuarioRol> UsuarioRoles => Set<UsuarioRol>();
+    public DbSet<Cliente> Clientes => Set<Cliente>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Entidades persistentes (tablas)
-        modelBuilder.Entity<Usuario>().HasKey(u => u.IdUsuario);
+        // 🔥 MAPEO EXPLÍCITO (MUY PRO)
+        modelBuilder.Entity<Usuario>(entity =>
+        {
+            entity.ToTable("Usuario");
+            entity.HasKey(u => u.IdUsuario);
+        });
 
-        // Proyecciones de lectura (vistas / reportes)
-        modelBuilder.Entity<UsuarioDto>().HasNoKey().ToView("vw_Usuarios");
+        modelBuilder.Entity<Rol>(entity =>
+        {
+            entity.ToTable("Rol");
+            entity.HasKey(r => r.IdRol);
+        });
+
+        modelBuilder.Entity<UsuarioRol>(entity =>
+        {
+            entity.ToTable("UsuarioRol");
+
+            entity.HasKey(ur => new { ur.IdUsuario, ur.IdRol });
+
+            entity.HasOne(ur => ur.Usuario)
+                  .WithMany(u => u.UsuarioRoles)
+                  .HasForeignKey(ur => ur.IdUsuario);
+
+            entity.HasOne(ur => ur.Rol)
+                  .WithMany(r => r.UsuarioRoles)
+                  .HasForeignKey(ur => ur.IdRol);
+        });
+
+        // Vista
+        modelBuilder.Entity<UsuarioDto>()
+            .HasNoKey()
+            .ToView("vw_Usuarios");
+
+        modelBuilder.Entity<Cliente>().HasKey(c => c.IdCliente);
 
         base.OnModelCreating(modelBuilder);
     }
 }
+

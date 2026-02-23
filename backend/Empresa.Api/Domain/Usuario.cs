@@ -7,5 +7,8 @@ public class Usuario
     public string Email { get; set; } = "";
     public string PasswordHash { get; set; } = "";
     public bool Activo { get; set; }
+
+    public ICollection<UsuarioRol> UsuarioRoles { get; set; }
+        = new List<UsuarioRol>();
 }
 

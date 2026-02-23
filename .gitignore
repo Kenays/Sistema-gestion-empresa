@@ -1,1 +1,8 @@
 docker/sqlserver/.env
+bin/
+obj/
+.vscode/
+*.user
+*.suo
+*.swp
+.env

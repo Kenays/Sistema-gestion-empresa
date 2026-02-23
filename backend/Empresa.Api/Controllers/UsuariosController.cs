@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Empresa.Api.Infrastructure;
 using Empresa.Api.Application.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Empresa.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles = "Administrador")]
 public class UsuariosController : ControllerBase
 {
   private readonly EmpresaDbContext _db;

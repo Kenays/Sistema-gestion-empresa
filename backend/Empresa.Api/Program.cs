@@ -44,7 +44,6 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<EmpresaDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("EmpresaDB"))
 );
-
 // JWT
 var jwt = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwt["Key"]!);

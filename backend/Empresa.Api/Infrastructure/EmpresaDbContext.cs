@@ -1,5 +1,6 @@
 using Empresa.Api.Application.Dtos;
 using Empresa.Api.Domain;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Empresa.Api.Infrastructure;
@@ -16,7 +17,7 @@ public class EmpresaDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // 🔥 MAPEO EXPLÍCITO (MUY PRO)
+        // MAPEO EXPLÍCITO (MUY PRO)
         modelBuilder.Entity<Usuario>(entity =>
         {
             entity.ToTable("Usuario");
@@ -35,23 +36,24 @@ public class EmpresaDbContext : DbContext
 
             entity.HasKey(ur => new { ur.IdUsuario, ur.IdRol });
 
-            entity.HasOne(ur => ur.Usuario)
-                  .WithMany(u => u.UsuarioRoles)
-                  .HasForeignKey(ur => ur.IdUsuario);
+            entity
+                .HasOne(ur => ur.Usuario)
+                .WithMany(u => u.UsuarioRoles)
+                .HasForeignKey(ur => ur.IdUsuario);
 
-            entity.HasOne(ur => ur.Rol)
-                  .WithMany(r => r.UsuarioRoles)
-                  .HasForeignKey(ur => ur.IdRol);
+            entity.HasOne(ur => ur.Rol).WithMany(r => r.UsuarioRoles).HasForeignKey(ur => ur.IdRol);
         });
 
         // Vista
-        modelBuilder.Entity<UsuarioDto>()
-            .HasNoKey()
-            .ToView("vw_Usuarios");
+        modelBuilder.Entity<UsuarioDto>().HasNoKey().ToView("vw_Usuarios");
 
-        modelBuilder.Entity<Cliente>().HasKey(c => c.IdCliente);
+        modelBuilder.Entity<Cliente>().ToTable("Cliente").HasKey(c => c.IdCliente);
+
+        modelBuilder
+            .Entity<Cliente>()
+            .Property(c => c.FechaRegistro)
+            .HasDefaultValueSql("SYSDATETIME()");
 
         base.OnModelCreating(modelBuilder);
     }
 }
-

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Empresa.Api.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -70,7 +71,10 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
-
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<ClienteService>();
+builder.Services.AddScoped<ProductoService>();
+builder.Services.AddScoped<VentaService>();
 var app = builder.Build();
 
 // Middleware
@@ -86,4 +90,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-

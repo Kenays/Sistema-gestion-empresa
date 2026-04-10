@@ -5,4 +5,3 @@ public class RegisterRequest
     public string Password { get; set; } = "";
     public string Rol{get; set;} = "Operador";
 }
-

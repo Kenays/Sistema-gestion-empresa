@@ -1,9 +1,7 @@
 using Empresa.Api.Application.Dtos;
-using Empresa.Api.Domain;
-using Empresa.Api.Infrastructure;
+using Empresa.Api.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Empresa.Api.Controllers;
 
@@ -12,108 +10,59 @@ namespace Empresa.Api.Controllers;
 [Authorize(Roles = "Administrador")]
 public class ClientesController : ControllerBase
 {
-  private readonly EmpresaDbContext _db;
+    private readonly ClienteService _clienteService;
 
-  public ClientesController(EmpresaDbContext db)
-  {
-      _db = db;
-  }
+    public ClientesController(ClienteService clienteService)
+    {
+        _clienteService = clienteService;
+    }
 
-  [HttpGet]
-  public async Task<ActionResult<IEnumerable<ClienteDto>>> Get()
-  {
-      var clientes = await _db
-          .Clientes.Select(c => new ClienteDto
-          {
-              IdCliente = c.IdCliente,
-              Nombre = c.Nombre,
-              Email = c.Email,
-              Telefono = c.Telefono,
-              Activo = c.Activo,
-              FechaRegistro = c.FechaRegistro,
-          })
-          .ToListAsync();
-      return Ok(clientes);
-  }
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ClienteDto>>> Get()
+    {
+        var clientes = await _clienteService.GetClientes();
+        return Ok(clientes);
+    }
 
-  [HttpGet("{id}")]
-  public async Task<ActionResult<ClienteDto>> Get(int id)
-  {
-      var clientes = await _db
-          .Clientes.Where(c => c.IdCliente == id)
-          .Select(c => new ClienteDto
-          {
-              IdCliente = c.IdCliente,
-              Nombre = c.Nombre,
-              Email = c.Email,
-              Telefono = c.Telefono,
-              Activo = c.Activo,
-              FechaRegistro = c.FechaRegistro,
-          })
-          .FirstOrDefaultAsync();
+    [HttpGet("{id}")]
+    public async Task<ActionResult<IEnumerable<ClienteDto>>> Get(int id)
+    {
+        var clientes = await _clienteService.GetCliente(id);
 
-      if (clientes == null)
-      {
-          return NotFound();
-      }
+        if (clientes == null)
+            return NotFound();
 
-      return Ok(clientes);
-  }
+        return Ok(clientes);
+    }
 
-  [HttpPost]
-  public async Task<ActionResult> Post(CrearClienteDto dto)
-  {
-      var clientes = new Cliente
-      {
-          Nombre = dto.Nombre,
-          Telefono = dto.Telefono,
-          Email = dto.Email,
-          Activo = true,
-      };
+    [HttpPost]
+    public async Task<ActionResult> Post(CrearClienteDto dto)
+    {
+        var id = await _clienteService.CrearCliente(dto);
 
-      _db.Clientes.Add(clientes);
+        return CreatedAtAction(nameof(Get), new { id }, null);
+    }
 
-      await _db.SaveChangesAsync();
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Put(int id, ActualizarClienteDto dto)
+    {
+      var actualizado = await _clienteService.ActualizarCliente(id, dto);
 
-      return CreatedAtAction(nameof(Get), new { id = clientes.IdCliente }, clientes);
-  }
+      if (!actualizado)
+        return NotFound();
 
-  [HttpPut("{id}")]
-  public async Task<ActionResult> Put(int id, ActualizarClienteDto dto)
-  {
-      var clientes = await _db.Clientes.FindAsync(id);
-
-      if (clientes == null)
-          return NotFound();
-
-      if (dto.Nombre != null)
-          clientes.Nombre = dto.Nombre;
-
-      if (dto.Email != null)
-          clientes.Email = dto.Email;
-
-      if (dto.Telefono != null)
-          clientes.Telefono = dto.Telefono;
-
-      if (dto.Activo.HasValue)
-          clientes.Activo = dto.Activo.Value;
-
-      await _db.SaveChangesAsync();
       return NoContent();
-  }
+    }
 
-  [HttpDelete("{id}")]
-  public async Task<ActionResult> Delete(int id)
-  {
-    var cliente = await _db.Clientes.FindAsync(id);
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(int id)
+    {
+      var eliminado = await _clienteService.EliminarCliente(id);
+      
+      if(!eliminado)
+        return NotFound();
 
-    if(cliente==null)
-      return NotFound();
+      return NoContent();
 
-    cliente.Activo = false;
-
-    await _db.SaveChangesAsync();
-
-    return NoContent();
-  }
+    }
 }

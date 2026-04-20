@@ -53,20 +53,28 @@ public class AuthService
         if (await _db.Usuarios.AnyAsync(u => u.Email == req.Email))
             throw new Exception("Email ya registrado.");
 
+        var rol = await _db.Roles.FirstOrDefaultAsync(r => r.Nombre == req.Rol);
+
+        if (rol == null)
+            throw new Exception("El rol no existe.");
+
         var user = new Usuario
         {
             Nombre = req.Nombre,
             Email = req.Email,
             PasswordHash = PasswordHasher.Hash(req.Password),
             Activo = true,
+            UsuarioRoles = new List<UsuarioRol>(), // 👈 importante
         };
 
+        user.UsuarioRoles.Add(
+            new UsuarioRol
+            {
+                Rol = rol, // 👈 no uses IdRol directamente
+            }
+        );
+
         _db.Usuarios.Add(user);
-        await _db.SaveChangesAsync();
-
-        var rol = await _db.Roles.FirstAsync(r => r.Nombre == req.Rol);
-
-        _db.UsuarioRoles.Add(new UsuarioRol { IdUsuario = user.IdUsuario, IdRol = rol.IdRol });
 
         await _db.SaveChangesAsync();
     }

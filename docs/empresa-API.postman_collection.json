@@ -1,0 +1,332 @@
+{
+  "info": {
+    "_postman_id": "41dc7d51-fbba-4329-96f1-e7f2aa313004",
+    "name": "Empresa gestión API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "14906148"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set(\"token\", pm.response.json().token);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@empresa.com\",\n  \"password\": \"123456\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/Auth/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "Auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Test Uno\",\n  \"email\": \"test{{$timestamp}}@mail.com\",\n  \"password\": \"contraseña\",\n  \"rol\": \"Administrador\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/Auth/register",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "Auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Productos",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "[\n  {\n    \"idProducto\": 0,\n    \"nombre\": \"string\",\n    \"descripcion\": \"string\",\n    \"precio\": 0,\n    \"stock\": 0,\n    \"codigo\": \"string\",\n    \"impuesto\": 0,\n    \"activo\": true\n  }\n]",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/Productos/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "Productos",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Post Productos",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Audifonos marca Sony\",\n  \"descripcion\": \"Audifonos 4d\",\n  \"precio\": 500,\n  \"costo\": 389.99,\n  \"stock\": 10,\n  \"codigo\": \"5499632\",\n  \"impuesto\": 0.8\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/Productos/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "Productos",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Clientes",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "[\n  {\n    \"idCliente\": 0,\n    \"nombre\": \"string\",\n    \"email\": \"string\",\n    \"telefono\": \"string\",\n    \"activo\": true,\n    \"fechaRegistro\": \"2026-04-21T03:06:38.343Z\"\n  }\n]"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/Clientes/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "Clientes",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Post Clientes",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Alberto Pepito\",\n  \"email\": \"alberto@gmail.com\",\n  \"telefono\": \"7844112250\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/Clientes/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "Clientes",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Ventas",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "[\n  {\n    \"idVenta\": 0,\n    \"idCliente\": 0,\n    \"fecha\": \"2026-04-21T02:52:51.000Z\",\n    \"subtotal\": 0,\n    \"impuesto\": 0,\n    \"total\": 0,\n    \"detalles\": [\n      {\n        \"idProducto\": 0,\n        \"nombreProducto\": \"string\",\n        \"cantidad\": 0,\n        \"precioUnitario\": 0,\n        \"impuesto\": 0,\n        \"subtotal\": 0\n      }\n    ]\n  }\n]",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/Ventas/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "Ventas",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Post Ventas",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"idCliente\": 2,\n  \"detalles\": [\n    {\n      \"idProducto\": 3,\n      \"cantidad\": 2\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/Ventas/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "Ventas",
+            ""
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://sistema-gestion-empresa.onrender.com"
+    }
+  ]
+}

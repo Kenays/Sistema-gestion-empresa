@@ -8,24 +8,31 @@ namespace Empresa.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-  private readonly AuthService _auth;
-  
-  public AuthController(AuthService auth)
-  {
-    _auth = auth;
-  }
+    private readonly AuthService _auth;
 
-  [HttpPost("login")]
-  public async Task<ActionResult<LoginResponse>> Login(LoginRequest req)
-  {
-    var result = await _auth.Login(req);
-    return Ok(result);
-  }
+    public AuthController(AuthService auth)
+    {
+        _auth = auth;
+    }
 
-  [HttpPost("register")]
-  public async Task<ActionResult> Register(RegisterRequest req)
-  {
-    await _auth.Register(req);
-      return Ok("Usuario creado");
-  }
+    [HttpPost("login")]
+    public async Task<ActionResult<LoginResponse>> Login(LoginRequest req)
+    {
+        var result = await _auth.Login(req);
+        return Ok(result);
+    }
+
+    [HttpPost("register")]
+    public async Task<ActionResult> Register(RegisterRequest req)
+    {
+        try
+        {
+            await _auth.Register(req);
+            return Ok("Usuario creado");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }
